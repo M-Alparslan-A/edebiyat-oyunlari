@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Edebiyat Kelime Kutusu</title>
+    <title>Edebiyat Kelime Kutusu - Rekabetçi Mod</title>
     <style>
         @keyframes hareketliArkaPlan {
             0% { background-position: 0% 50%; }
@@ -39,12 +39,6 @@
             align-content: space-around;
             z-index: 0;
             pointer-events: none;
-            animation: hafifDagit 20s infinite alternate;
-        }
-
-        @keyframes hafifDagit {
-            0% { transform: translateY(0) rotate(0deg); }
-            100% { transform: translateY(-15px) rotate(3deg); }
         }
 
         .container {
@@ -79,24 +73,28 @@
             border: 4px solid #d1e7e0;
         }
 
+        .butonlar {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
         button { 
-            font-size: 1.5rem; 
-            padding: 18px 45px; 
-            background-color: #f4d03f; 
-            color: #1e3f36; 
+            font-size: 1.3rem; 
+            padding: 15px 30px; 
             border: none; 
             border-radius: 12px; 
             cursor: pointer; 
             font-weight: bold; 
-            margin-top: 30px; 
             transition: 0.3s; 
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
-        button:hover { 
-            background-color: #f1c40f; 
-            transform: scale(1.05);
-        }
+        .btn-getir { background-color: #f4d03f; color: #1e3f36; }
+        .btn-getir:hover { background-color: #f1c40f; transform: scale(1.05); }
+
+        .btn-bitir { background-color: #e74c3c; color: white; }
+        .btn-bitir:hover { background-color: #c0392b; transform: scale(1.05); }
 
         .bilgi-kutusu {
             margin-top: 20px;
@@ -106,12 +104,45 @@
             font-weight: bold;
         }
 
-        .sayac, .paket-bilgi {
+        .sayac, .paket-bilgi, .sure-gosterge {
             background: rgba(0, 0, 0, 0.3);
             padding: 8px 20px;
             border-radius: 20px;
             color: #a3e4d7;
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Sağ alt köşe Liderlik Tablosu (Top 3) */
+        .top-listesi {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 10;
+            min-width: 200px;
+        }
+
+        .top-listesi h3 {
+            margin: 0 0 8px 0;
+            font-size: 1rem;
+            color: #f4d03f;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 5px;
+        }
+
+        .top-listesi ol {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 0.95krem;
+            color: #fff;
+        }
+
+        .top-listesi li {
+            margin-bottom: 4px;
         }
     </style>
 </head>
@@ -120,42 +151,46 @@
     <div class="container">
         <div class="baslik-ust">📚 9 - 10 - 11. Sınıf Edebiyat Kelime Avı 📜</div>
         <h1 id="kelimeAlani">Dersi Başlatmak İçin Tıkla</h1>
-        <button onclick="rastgeleKelimeSec()">Rastgele Kelime Getir</button>
+        
+        <div class="butonlar">
+            <button class="btn-getir" onclick="rastgeleKelimeSec()">Rastgele Kelime Getir</button>
+            <button class="btn-bitir" onclick="oyunuBitir()">Bitir / Kaydet</button>
+        </div>
+
         <div class="bilgi-kutusu">
             <div class="paket-bilgi" id="paketAlani">Paket: 1 / 8</div>
             <div class="sayac" id="sayacAlani">Kalan Kelime: 250</div>
+            <div class="sure-gosterge" id="sureAlani">Süre: 0s</div>
         </div>
     </div>
 
+    <!-- Sağ Alt Köşe Liderlik Tablosu -->
+    <div class="top-listesi">
+        <h3>🏆 En İyi 3 Skor</h3>
+        <ol id="top3Listesi">
+            <li>Henüz skor yok</li>
+        </ol>
+    </div>
+
     <script>
-        // Döngüye sokmadan doğrudan güvenli ve zenginleştirilmiş 8 paket (Her biri 250 kelime kapasiteli)
         const paketler = [
-            // Paket 1: Masal, Destan ve Halk Edebiyatı
             ["Masal", "Destan", "Efsane", "Mit", "Destancı", "Keloğlan", "Padişah", "Vezir", "Derviş", "Cadı", "Tılsım", "Sihirli Elma", "Kaf Dağı", "Anka Kuşu", "Yediveren", "Hızır", "Bozkurt", "Ergenekon", "Oğuz Kağan", "Koşma", "Semai", "Varsağı", "İlahi", "Nefes", "Nutuk", "Devriye", "Şathiye", "Aşık", "Ozan", "Saz", "Bağlama", "Cönk", "Atasözü", "Bilmeceler", "Karacaoğlan", "Dadaloğlu", "Pir Sultan Abdal", "Yunus Emre", "Köroğlu", "Kaygusuz Abdal", "Gevheri", "Bayramî", "Tekke Edebiyatı", "Anonim Halk Edebiyatı", "Mani", "Türkü", "Lirik Şiir", "Cönk Defteri", "Halk Hikayesi", "Kerem ile Aslı"],
-            // Paket 2: Şiir Bilgisi ve Ahenk Unsurları
             ["Kafiye", "Redif", "Dize", "Mısra", "Beyit", "Bent", "Kıta", "Ölçü", "Hece Ölçüsü", "Aruz Ölçüsü", "Cinas", "Aliterasyon", "Seci", "Akrostiş", "Uyak", "Yarım Uyak", "Tam Uyak", "Zengin Uyak", "Tunç Uyak", "Nazım Birimi", "Nazım Şekli", "Serbest Şiir", "Durak", "Vezin", "Kafiye Örgüsü", "Sarma Uyak", "Düz Uyak", "Çapraz Uyak", "mani", "türkü", "koşma", "semai", "divan", "gazel", "kaside", "mesnevi", "tuyuğ", "rübai", "murabba", "müstezat"],
-            // Paket 3: Söz Sanatları ve Edebi Sanatlar
             ["Teşbih", "Benzetme", "İstiare", "Eğretileme", "Mecaz", "Mecaz-ı Mürsel", "Ad Aktarımı", "Tezat", "Zıtlık", "Kinayet", "Hüsn-i Talil", "Güzel Nedenleme", "Tecahül-i Arif", "Bilmezlikten Gelme", "Mübalağa", "Abartma", "Tenasüp", "Uygunluk", "Tecnis", "İntak", "Konuşturma", "Teşhis", "Kişileştirme", "İstifham", "Soru Sorma", "Tevriye", "İltifat", "Cinas", "Telmih", "Hatırlatma", "İrsal-i Mesel", "Cinaslı Uyak", "Leff ü Neş", "Tariz", "İğneleme", "Mürsel", "Nida", "Seci", "Akrostiş", "Aliterasyon"],
-            // Paket 4: Divan Edebiyatı Kavramları ve Şairleri
             ["Gazel", "Kaside", "Mesnevi", "Müstezat", "Murabba", "Terkib-i Bent", "Tuyuğ", "Rübai", "Mahlas", "Matla", "Makt", "Şair", "Divan", "Fuzuli", "Baki", "Nedim", "Nabi", "Şeyhi", "Şeyh Galip", "Hüsn ü Aşk", "Leyla ile Mecnun", "Saki", "Meyhane", "Hikemî Tarz", "Sebkihindi", "Medrese", "Münacaat", "Naat", "Hicviye", "Fahriye", "Mersiye", "Musammat", "Şarkı", "Müseddes", "Müsemmen", "Terci-i Bent", "Zati", "Necati", "Hayali", "Azmizade"],
-            // Paket 5: Roman, Hikaye ve Anlatım Teknikleri
             ["Roman", "Hikaye", "Öykü", "Olay Örgüsü", "Kahraman", "Mekân", "Zaman", "Anlatıcı", "Bakış Açısı", "Hakim Bakış", "Kahraman Bakış", "Gözlemci Bakış", "Tema", "Konu", "Çatışma", "İç Monolog", "Bilinç Akışı", "Geriye Dönüş", "Flaşbek", "Portre", "Mizansen", "Diyalog", "İç Ses", "Özetleme", "Anlatı", "Postmodern", "Realizm", "Romantizm", "Klasisizm", "Natüralizm", "Sembolizm", "Parnasizm", "Empresyonizm", "Sürrealizm", "Ekspresyonizm", "Futurizm", "Varoluşçuluk", "Absürt", "Didaktik", "Lirik"],
-            // Paket 6: Tanzimat ve Servet-i Fünun Dönemi
             ["Tanzimat", "Namık Kemal", "Şinasi", "Ziya Paşa", "Ahmet Mithat", "Recaizade Mahmut Ekrem", "Abdülhak Hamit", "Araba Sevdası", "İntibah", "Vatan Yahut Silistre", "Servet-i Fünun", "Edebiyat-ı Cedide", "Tevfik Fikret", "Cenap Şahabettin", "Halit Ziya", "Mai ve Siyah", "Aşk-ı Memnu", "Mehmet Rauf", "Eylül", "Fecr-i Ati", "Ahmet Haşim", "Merdiven", "Saf Şiir", "Toplumsal Gerçekçilik", "Zavallı Çocuk", "Cezmi", "Taaşşuk-ı Talat ve Fitnat", "Şair Evlenmesi", "Mukaddime", "Harabat", "Takip", "Defter-i Amal", "Esrar", "Sergüzeşt", "Muallim Naci", "Demdeme", "Zemzeme", "Tasvir-i Efkar", "İbret", "Zaman"],
-            // Paket 7: Milli Edebiyat ve Cumhuriyet Dönemi
             ["Milli Edebiyat", "Ziya Gökalp", "Ömer Seyfettin", "Yakup Kadri", "Yaban", "Refik Halit", "Reşat Nuri", "Yaprak Dökümü", "Çalıkuşu", "Halide Edip", "Ateşten Gömlek", "Sinekli Bakkal", "Faruk Nafiz", "Beş Hececiler", "Orhan Veli", "Garipçiler", "İkinci Yeni", "Toplumcu Şiir", "Nazım Hikmet", "Ahmet Hamdi", "Peyami Safa", "Fatih Harbiye", "Dokuzuncu Hariciye Koğuşu", "Kemal Tahir", "Yaşar Kemal", "İnce Memed", "Orhan Kemal", "Tarık Buğra", "Küçük Ağa", "Atilla İlhan", "Memleket Edebiyatı", "Beş Şehir", "Huzur", "Saatleri Ayarlama Enstitüsü", "Yalnız Efe", "Diyet", "Vurun Kahpeye", "Kiralık Konak", "Ankara", "Sodom ve Gomore"],
-            // Paket 8: Edebi Akımlar, Tiyatro ve Genel Terimler
             ["Tiyatro", "Dram", "Komedi", "Tragedya", "Trajedi", "Biyografi", "Otobiyografi", "Anı", "Günlük", "Mektup", "Gezi Yazısı", "Haber", "Makale", "Fıkra", "Deneme", "Eleştiri", "Mülakat", "Röportaj", "Nutuk", "Manzum", "Mensur", "Senaryo", "Perde", "Sahne", "Kostüm", "Dekor", "Diyalog", "Monolog", "Pandomim", "Kukla", "Meddah", "Karagöz", "Hacivat", "Orta Oyunu", "Köy Seyirlik", "Kavuklu", "Pişekar", "Zenne", "Çelebi", "Tiyatro Terimleri"]
         ];
 
-        // Her paketi otomatik olarak tam 250 kelimeye güvenli şekilde şişiren optimize mantık
+        // Güvenli şekilde 250'ye tamamlama
         let tumKelimeler = [];
         let eklerListesi = [" (Terimi)", " (Kavramı)", " (Örneği)", " (Çeşitleri)"];
 
         paketler.forEach((paket) => {
             let genisletilmis = [...paket];
             let i = 0;
-            // Sonsuz döngüye girmemesi için güvenli sınır ile 250'ye tamamlama
             while (genisletilmis.length < 250) {
                 let temel = paket[i % paket.length];
                 let ek = eklerListesi[i % eklerListesi.length];
@@ -164,13 +199,18 @@
                     genisletilmis.push(yeniOge);
                 }
                 i++;
-                if (i > 1000) break; // Güvenlik kilidi
+                if (i > 1000) break;
             }
             tumKelimeler.push(genisletilmis);
         });
 
         let mevcutPaketIndex = 0;
         let aktifHavuz = [...tumKelimeler[mevcutPaketIndex]];
+        
+        let oyunBasladi = false;
+        let saniyeSayac = 0;
+        let zamanlayici = null;
+        let skorlar = [];
 
         function ekranıGuncelle() {
             document.getElementById("sayacAlani").innerText = "Kalan Kelime: " + aktifHavuz.length;
@@ -178,8 +218,19 @@
         }
 
         ekranıGuncelle();
+        liderlikTablosunuGoster();
 
         function rastgeleKelimeSec() {
+            if (!oyunBasladi) {
+                oyunBasladi = true;
+                saniyeSayac = 0;
+                clearInterval(zamanlayici);
+                zamanlayici = setInterval(() => {
+                    saniyeSayac++;
+                    document.getElementById("sureAlani").innerText = "Süre: " + saniyeSayac + "s";
+                }, 1000);
+            }
+
             if (aktifHavuz.length === 0) {
                 mevcutPaketIndex++;
                 if (mevcutPaketIndex >= 8) {
@@ -194,10 +245,53 @@
             const rastgeleIndex = Math.floor(Math.random() * aktifHavuz.length);
             const secilenKelime = aktifHavuz[rastgeleIndex];
             
+            // Çıkan kelime havuzdan silinir, böylece aynı kelime tekrar gelmez
             aktifHavuz.splice(rastgeleIndex, 1);
 
             document.getElementById("kelimeAlani").innerText = secilenKelime;
             ekranıGuncelle();
+        }
+
+        function oyunuBitir() {
+            if (!oyunBasladi) {
+                alert("Önce oyunu başlatıp birkaç kelime çekmelisiniz!");
+                return;
+            }
+
+            clearInterval(zamanlayici);
+            let isim = prompt("Tebrikler! Oyunu bitirdiniz.\nSüreniz: " + saniyeSayac + " saniye.\nLütfen adınızı girin:");
+            
+            if (isim && isim.trim() !== "") {
+                skorlar.push({ isim: isim.trim(), sure: saniyeSayac });
+                // Süreye göre küçükten büyüğe sıralama (en hızlı birinci)
+                skorlar.sort((a, b) => a.sure - b.sure);
+            }
+
+            liderlikTablosunuGoster();
+            
+            // Sıfırla ve yeni oyuncu için kaldığı yerden (kalan kelimelerle) devam etmesini sağla
+            oyunBasladi = false;
+            saniyeSayac = 0;
+            document.getElementById("sureAlani").innerText = "Süre: 0s";
+            document.getElementById("kelimeAlani").innerText = "Sıradaki Oyuncu İçin Hazır";
+        }
+
+        function liderlikTablosunuGoster() {
+            const listeElemani = document.getElementById("top3Listesi");
+            listeElemani.innerHTML = "";
+
+            if (skorlar.length === 0) {
+                listeElemani.innerHTML = "<li>Henüz skor yok</li>";
+                return;
+            }
+
+            // Sadece ilk 3 kişiyi al
+            const top3 = skorlar.slice(0, 3);
+            top3.forEach((skor) => {
+                let li = document.createElement("li");
+                li.innerText = skor.isim + " - " + skor.sure + "s";
+                listeElemani.appendChild(li);
+            });
         }
     </script>
 </body>
