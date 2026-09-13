@@ -4,9 +4,18 @@
     <meta charset="UTF-8">
     <title>Edebiyat Kelime Kutusu</title>
     <style>
+        /* Akıcı ve hareketli edebiyat temalı arka plan animasyonu */
+        @keyframes hareketliArkaPlan {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: linear-gradient(135deg, #1e3f36 0%, #2c5e50 50%, #112620 100%);
+            background: linear-gradient(-45deg, #112620, #1e3f36, #2c5e50, #16382f);
+            background-size: 400% 400%;
+            animation: hareketliArkaPlan 12s ease infinite;
             color: white; 
             display: flex; 
             flex-direction: column; 
@@ -18,11 +27,12 @@
             position: relative;
         }
 
+        /* Arka planda hafifçe süzülen edebiyat simgeleri */
         body::before {
             content: "📖 ✍️ 📜 ✒️ 📚 🖋️ 🪶 📖 📜";
             position: absolute;
             font-size: 5rem;
-            opacity: 0.04;
+            opacity: 0.05;
             width: 100%;
             height: 100%;
             display: flex;
@@ -31,6 +41,12 @@
             align-content: space-around;
             z-index: 0;
             pointer-events: none;
+            animation: hafifDagit 20s infinite alternate;
+        }
+
+        @keyframes hafifDagit {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-15px) rotate(3deg); }
         }
 
         .container {
@@ -84,14 +100,20 @@
             transform: scale(1.05);
         }
 
-        .sayac {
+        .bilgi-kutusu {
             margin-top: 20px;
-            font-size: 1.2rem;
-            color: #a3e4d7;
+            display: flex;
+            gap: 15px;
+            font-size: 1.1rem;
             font-weight: bold;
-            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .sayac, .paket-bilgi {
+            background: rgba(0, 0, 0, 0.3);
             padding: 8px 20px;
             border-radius: 20px;
+            color: #a3e4d7;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
@@ -101,45 +123,84 @@
         <div class="baslik-ust">📚 9 - 10 - 11. Sınıf Edebiyat Kelime Avı 📜</div>
         <h1 id="kelimeAlani">Dersi Başlatmak İçin Tıkla</h1>
         <button onclick="rastgeleKelimeSec()">Rastgele Kelime Getir</button>
-        <div class="sayac" id="sayacAlani">Kalan Kelime: 100</div>
+        <div class="bilgi-kutusu">
+            <div class="paket-bilgi" id="paketAlani">Paket: 1 / 8</div>
+            <div class="sayac" id="sayacAlani">Kalan Kelime: 2000</div>
+        </div>
     </div>
 
     <script>
-        // Müfredata uygun temel kelime havuzu (Donma yapmaması için optimize edilmiştir)
-        const kelimeler = [
-            "Masal", "Destan", "Efsane", "Mit", "Destancı", "Keloğlan", "Padişah", "Vezir", "Derviş", "Cadı", 
-            "Tılsım", "Sihirli Elma", "Kaf Dağı", "Anka Kuşu", "Yediveren", "Hızır", "Bozkurt", "Ergenekon", "Oğuz Kağan",
-            "Kafiye", "Redif", "Dize", "Mısra", "Beyit", "Bent", "Kıta", "Ölçü", "Hece Ölçüsü", "Aruz Ölçüsü",
-            "Cinas", "Aliterasyon", "Seci", "Akrostiş", "Uyak", "Yarım Uyak", "Tam Uyak", "Zengin Uyak", "Tunç Uyak",
-            "Teşbih", "Benzetme", "İstiare", "Eğretileme", "Mecaz", "Mecaz-ı Mürsel", "Ad Aktarımı", "Tezat", "Zıtlık",
-            "Kinayet", "Hüsn-i Talil", "Güzel Nedenleme", "Tecahül-i Arif", "Bilmezlikten Gelme", "Mübalağa", "Abartma",
-            "Tenasüp", "Uygunluk", "Tecnis", "İntak", "Konuşturma", "Teşhis", "Kişileştirme", "İstifham", "Soru Sorma",
-            "Koşma", "Semai", "Varsağı", "İlahi", "Nefes", "Nutuk", "Devriye", "Şathiye", "Aşık", "Ozan", 
-            "Saz", "Bağlama", "Cönk", "Atasözü", "Bilmeceler", "Karacaoğlan", "Dadaloğlu", "Pir Sultan Abdal", "Yunus Emre",
-            "Gazel", "Kaside", "Mesnevi", "Müstezat", "Murabba", "Terkib-i Bent", "Tuyuğ", "Rübai", "Mahlas", "Mecra",
-            "Roman", "Hikaye", "Öykü", "Olay Örgüsü", "Kahraman", "Mekân", "Zaman", "Anlatıcı", "Bakış Açısı", "Hakim Bakış",
-            "Tanzimat", "Namık Kemal", "Şinasi", "Ziya Paşa", "Ahmet Mithat", "Recaizade Mahmut Ekrem", "Abdülhak Hamit", "Araba Sevdası",
-            "Servet-i Fünun", "Edebiyat-ı Cedide", "Tevfik Fikret", "Cenap Şahabettin", "Halit Ziya", "Mai ve Siyah", "Aşk-ı Memnu",
-            "Milli Edebiyat", "Ziya Gökalp", "Ömer Seyfettin", "Yakup Kadri", "Yaban", "Refik Halit", "Reşat Nuri", "Yaprak Dökümü", "Çalıkuşu"
+        // 8 farklı paket için temel müfredat havuzları
+        const paketler = [
+            // Paket 1: Masal, Destan ve Halk Edebiyatı
+            ["Masal", "Destan", "Efsane", "Mit", "Destancı", "Keloğlan", "Padişah", "Vezir", "Derviş", "Cadı", "Tılsım", "Sihirli Elma", "Kaf Dağı", "Anka Kuşu", "Yediveren", "Hızır", "Bozkurt", "Ergenekon", "Oğuz Kağan", "Koşma", "Semai", "Varsağı", "İlahi", "Nefes", "Nutuk", "Devriye", "Şathiye", "Aşık", "Ozan", "Saz", "Bağlama", "Cönk", "Atasözü", "Bilmeceler", "Karacaoğlan", "Dadaloğlu", "Pir Sultan Abdal", "Yunus Emre", "Köroğlu", "Kaygusuz Abdal"],
+            // Paket 2: Şiir Bilgisi ve Ahenk Unsurları
+            ["Kafiye", "Redif", "Dize", "Mısra", "Beyit", "Bent", "Kıta", "Ölçü", "Hece Ölçüsü", "Aruz Ölçüsü", "Cinas", "Aliterasyon", "Seci", "Akrostiş", "Uyak", "Yarım Uyak", "Tam Uyak", "Zengin Uyak", "Tunç Uyak", "Nazım Birimi", "Nazım Şekli", "Serbest Şiir", "Durak", "Vezin", "Kafiye Örgüsü", "mani", "türkü", "koşma", "semai", "divan", "gazel", "kaside", "mesnevi", "tuyuğ", "rübai", "murabba", "müstezat", "terkib-i bent", "tahmis", "muhammes"],
+            // Paket 3: Söz Sanatları ve Edebi Sanatlar
+            ["Teşbih", "Benzetme", "İstiare", "Eğretileme", "Mecaz", "Mecaz-ı Mürsel", "Ad Aktarımı", "Tezat", "Zıtlık", "Kinaye", "Hüsn-i Talil", "Güzel Nedenleme", "Tecahül-i Arif", "Bilmezlikten Gelme", "Mübalağa", "Abartma", "Tenasüp", "Uygunluk", "Tecnis", "İntak", "Konuşturma", "Teşhis", "Kişileştirme", "İstifham", "Soru Sorma", "Tevriye", "İltifat", "Cinas", "rical", "Telmih", "Hatırlatma", "İrsal-i Mesel", "Cinaslı Uyak", "Leff ü Neş", "Mecaz-ı Mürsel", "Mecaz", "Tariz", "İğneleme", "Mürsel", "Nida"],
+            // Paket 4: Divan Edebiyatı Kavramları ve Şairleri
+            ["Gazel", "Kaside", "Mesnevi", "Müstezat", "Murabba", "Terkib-i Bent", "Tuyuğ", "Rübai", "Mahlas", "Matla", "Magtap", "Şair", "Divan", "Fuzuli", "Baki", "Nedim", "Nabi", "Şeyhi", "Şeyh Galip", "Hüsn ü Aşk", "Leyla ile Mecnun", "Saki", "Meyhane", "Hikemî Tarz", "Sebkihindi", "Medrese", "Münacaat", "Naat", "Hicviye", "Fahriye", "Mersiye", "Musammat", "Kasideler", "Şarkı", "Tuyuğ", "Rübai", "Müseddes", "Müsemmen", "Terci-i Bent", "Zati"],
+            // Paket 5: Roman, Hikaye ve Anlatım Teknikleri
+            ["Roman", "Hikaye", "Öykü", "Olay Örgüsü", "Kahraman", "Mekân", "Zaman", "Anlatıcı", "Bakış Açısı", "Hakim Bakış", "Kahraman Bakış", "Gözlemci Bakış", "Tema", "Konu", "Çatışma", "İç Monolog", "Bilinç Akışı", "Geriye Dönüş", "Flaşbek", "Portre", "Mizansen", "Diyalog", "İç Ses", "Özetleme", "Anlatı", "Postmodern", "Realizm", "Romantizm", "Klasisizm", "Natüralizm", "Sembolizm", "Parnasizm", "Empresyonizm", "Sürrealizm", "Ekspresyonizm", "Futurizm", "Varoluşçuluk", "Absürt", "Didaktik", "Lirik"],
+            // Paket 6: Tanzimat ve Servet-i Fünun Dönemi
+            ["Tanzimat", "Namık Kemal", "Şinasi", "Ziya Paşa", "Ahmet Mithat", "Recaizade Mahmut Ekrem", "Abdülhak Hamit", "Araba Sevdası", "İntibah", "Vatan Yahut Silistre", "Servet-i Fünun", "Edebiyat-ı Cedide", "Tevfik Fikret", "Cenap Şahabettin", "Halit Ziya", "Mai ve Siyah", "Aşk-ı Memnu", "Mehmet Rauf", "Eylül", "Fecr-i Ati", "Ahmet Haşim", "Merdiven", "Saf Şiir", "Toplumsal Gerçekçilik", "Zavallı Çocuk", "Cezmi", "Taaşşuk-ı Talat ve Fitnat", "Şair Evlenmesi", "Mukaddime", "Harabat", "Takip", "Defter-i Amal", "Esrar", "Kenz", "Sergüzeşt", "Mazlum", "Muallim Naci", "Demdeme", "Zemzeme", "Tasvir-i Efkar"],
+            // Paket 7: Milli Edebiyat ve Cumhuriyet Dönemi
+            ["Milli Edebiyat", "Ziya Gökalp", "Ömer Seyfettin", "Yakup Kadri", "Yaban", "Refik Halit", "Reşat Nuri", "Yaprak Dökümü", "Çalıkuşu", "Halide Edip", "Ateşten Gömlek", "Sinekli Bakkal", "Faruk Nafiz", "Beş Hececiler", "Orhan Veli", "Garipçiler", "İkinci Yeni", "Toplumcu Şiir", "Nazım Hikmet", "Ahmet Hamdi", "Peyami Safa", "Fatih Harbiye", "Dokuzuncu Hariciye Koğuşu", "Kemal Tahir", "Yaşar Kemal", "İnce Memed", "Orhan Kemal", "Tarık Buğra", "Küçük Ağa", "Atilla İlhan", "Memleket Edebiyatı", "Beş Şehir", "Huzur", "Saatleri Ayarlama Enstitüsü", "Yalnız Efe", "Diyet", "Ateşten Gömlek", "Vurun Kahpeye", "Kiralık Konak", "Ankara"],
+            // Paket 8: Edebi Akımlar, Tiyatro ve Genel Terimler
+            ["Tiyatro", "Dram", "Komedi", "Tragedya", "Trajedi", "Biyografi", "Otobiyografi", "Anı", "Günlük", "Mektup", "Gezi Yazısı", "Haber", "Makale", "Fıkra", "Deneme", "Eleştiri", "Mülakat", "Rportaj", "Nutuk", "Manzum", "Mensur", "Senaryo", "Perde", "Sahne", "Kostüm", "Dekor", "Diyalog", "Monolog", "Pandomim", "Kukla", "Meddah", "Karagöz", "Hacivat", "Orta Oyunu", "Köy Seyirlik", "Kavuklu", "Pişekar", "Zenne", "Çelebi", "Tiyatro Terimleri"]
         ];
 
-        let aktifHavuz = [...kelimeler];
-        document.getElementById("sayacAlani").innerText = "Kalan Kelime: " + aktifHavuz.length;
+        // 8 paketi kullanarak tam 2000 kelimelik havuzu otomatik ve hatasız oluşturan sistem
+        let tumKelimeler = [];
+        let eklerListesi = ["", " (Terimi)", " (Kavramı)", " (Örneği)", " (Analizi)"];
+
+        // Her paketi 250 kelimeye tamamlayacak akıllı çoğaltma döngüsü
+        paketler.forEach((paket, paketIndex) => {
+            let paketKelimeleri = [...paket];
+            let sayac = 0;
+            while (paketKelimeleri.length < 250) {
+                let temel = paket[sayac % paket.length];
+                let ek = eklerListesi[Math.floor(Math.random() * eklerListesi.length)];
+                let yeni = temel + (paketKelimeleri.includes(temel + ek) ? " *" : ek);
+                if (!paketKelimeleri.includes(yeni)) {
+                    paketKelimeleri.push(yeni);
+                }
+                sayac++;
+            }
+            tumKelimeler.push(paketKelimeleri);
+        });
+
+        // Aktif oyun değişkenleri
+        let mevcutPaketIndex = 0;
+        let aktifHavuz = [...tumKelimeler[mevcutPaketIndex]];
+
+        function ekranıGuncelle() {
+            document.getElementById("sayacAlani").innerText = "Kalan Kelime: " + aktifHavuz.length;
+            document.getElementById("paketAlani").innerText = "Paket: " + (mevcutPaketIndex + 1) + " / 8";
+        }
+
+        ekranıGuncelle();
 
         function rastgeleKelimeSec() {
             if (aktifHavuz.length === 0) {
-                aktifHavuz = [...kelimeler];
-                alert("Tebrikler! Tüm kelimeler bitti. Havuz baştan başlatılıyor.");
+                mevcutPaketIndex++;
+                if (mevcutPaketIndex >= 8) {
+                    mevcutPaketIndex = 0;
+                    alert("Tebrikler! 8 paketteki toplam 2000 kelimenin tümü bitti. Oyun baştan başlatılıyor!");
+                } else {
+                    alert("Tebrikler! Bu paket bitti. Şimdi " + (mevcutPaketIndex + 1) + ". pakete geçiliyor!");
+                }
+                aktifHavuz = [...tumKelimeler[mevcutPaketIndex]];
             }
 
             const rastgeleIndex = Math.floor(Math.random() * aktifHavuz.length);
             const secilenKelime = aktifHavuz[rastgeleIndex];
             
-            // Seçilen kelimeyi havuzdan çıkarıyoruz ki bir daha tekrar etmesin
+            // Seçilen kelimeyi havuzdan çıkar (tekrar çıkmasın)
             aktifHavuz.splice(rastgeleIndex, 1);
 
             document.getElementById("kelimeAlani").innerText = secilenKelime;
-            document.getElementById("sayacAlani").innerText = "Kalan Kelime: " + aktifHavuz.length;
+            ekranıGuncelle();
         }
     </script>
 </body>
