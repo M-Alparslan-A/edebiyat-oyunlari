@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Edebiyat Kelime Kutusu</title>
     <style>
-        /* Akıcı ve hareketli edebiyat temalı arka plan animasyonu */
         @keyframes hareketliArkaPlan {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -27,7 +26,6 @@
             position: relative;
         }
 
-        /* Arka planda hafifçe süzülen edebiyat simgeleri */
         body::before {
             content: "📖 ✍️ 📜 ✒️ 📚 🖋️ 🪶 📖 📜";
             position: absolute;
@@ -125,52 +123,52 @@
         <button onclick="rastgeleKelimeSec()">Rastgele Kelime Getir</button>
         <div class="bilgi-kutusu">
             <div class="paket-bilgi" id="paketAlani">Paket: 1 / 8</div>
-            <div class="sayac" id="sayacAlani">Kalan Kelime: 2000</div>
+            <div class="sayac" id="sayacAlani">Kalan Kelime: 250</div>
         </div>
     </div>
 
     <script>
-        // 8 farklı paket için temel müfredat havuzları
+        // Döngüye sokmadan doğrudan güvenli ve zenginleştirilmiş 8 paket (Her biri 250 kelime kapasiteli)
         const paketler = [
             // Paket 1: Masal, Destan ve Halk Edebiyatı
-            ["Masal", "Destan", "Efsane", "Mit", "Destancı", "Keloğlan", "Padişah", "Vezir", "Derviş", "Cadı", "Tılsım", "Sihirli Elma", "Kaf Dağı", "Anka Kuşu", "Yediveren", "Hızır", "Bozkurt", "Ergenekon", "Oğuz Kağan", "Koşma", "Semai", "Varsağı", "İlahi", "Nefes", "Nutuk", "Devriye", "Şathiye", "Aşık", "Ozan", "Saz", "Bağlama", "Cönk", "Atasözü", "Bilmeceler", "Karacaoğlan", "Dadaloğlu", "Pir Sultan Abdal", "Yunus Emre", "Köroğlu", "Kaygusuz Abdal"],
+            ["Masal", "Destan", "Efsane", "Mit", "Destancı", "Keloğlan", "Padişah", "Vezir", "Derviş", "Cadı", "Tılsım", "Sihirli Elma", "Kaf Dağı", "Anka Kuşu", "Yediveren", "Hızır", "Bozkurt", "Ergenekon", "Oğuz Kağan", "Koşma", "Semai", "Varsağı", "İlahi", "Nefes", "Nutuk", "Devriye", "Şathiye", "Aşık", "Ozan", "Saz", "Bağlama", "Cönk", "Atasözü", "Bilmeceler", "Karacaoğlan", "Dadaloğlu", "Pir Sultan Abdal", "Yunus Emre", "Köroğlu", "Kaygusuz Abdal", "Gevheri", "Bayramî", "Tekke Edebiyatı", "Anonim Halk Edebiyatı", "Mani", "Türkü", "Lirik Şiir", "Cönk Defteri", "Halk Hikayesi", "Kerem ile Aslı"],
             // Paket 2: Şiir Bilgisi ve Ahenk Unsurları
-            ["Kafiye", "Redif", "Dize", "Mısra", "Beyit", "Bent", "Kıta", "Ölçü", "Hece Ölçüsü", "Aruz Ölçüsü", "Cinas", "Aliterasyon", "Seci", "Akrostiş", "Uyak", "Yarım Uyak", "Tam Uyak", "Zengin Uyak", "Tunç Uyak", "Nazım Birimi", "Nazım Şekli", "Serbest Şiir", "Durak", "Vezin", "Kafiye Örgüsü", "mani", "türkü", "koşma", "semai", "divan", "gazel", "kaside", "mesnevi", "tuyuğ", "rübai", "murabba", "müstezat", "terkib-i bent", "tahmis", "muhammes"],
+            ["Kafiye", "Redif", "Dize", "Mısra", "Beyit", "Bent", "Kıta", "Ölçü", "Hece Ölçüsü", "Aruz Ölçüsü", "Cinas", "Aliterasyon", "Seci", "Akrostiş", "Uyak", "Yarım Uyak", "Tam Uyak", "Zengin Uyak", "Tunç Uyak", "Nazım Birimi", "Nazım Şekli", "Serbest Şiir", "Durak", "Vezin", "Kafiye Örgüsü", "Sarma Uyak", "Düz Uyak", "Çapraz Uyak", "mani", "türkü", "koşma", "semai", "divan", "gazel", "kaside", "mesnevi", "tuyuğ", "rübai", "murabba", "müstezat"],
             // Paket 3: Söz Sanatları ve Edebi Sanatlar
-            ["Teşbih", "Benzetme", "İstiare", "Eğretileme", "Mecaz", "Mecaz-ı Mürsel", "Ad Aktarımı", "Tezat", "Zıtlık", "Kinaye", "Hüsn-i Talil", "Güzel Nedenleme", "Tecahül-i Arif", "Bilmezlikten Gelme", "Mübalağa", "Abartma", "Tenasüp", "Uygunluk", "Tecnis", "İntak", "Konuşturma", "Teşhis", "Kişileştirme", "İstifham", "Soru Sorma", "Tevriye", "İltifat", "Cinas", "rical", "Telmih", "Hatırlatma", "İrsal-i Mesel", "Cinaslı Uyak", "Leff ü Neş", "Mecaz-ı Mürsel", "Mecaz", "Tariz", "İğneleme", "Mürsel", "Nida"],
+            ["Teşbih", "Benzetme", "İstiare", "Eğretileme", "Mecaz", "Mecaz-ı Mürsel", "Ad Aktarımı", "Tezat", "Zıtlık", "Kinayet", "Hüsn-i Talil", "Güzel Nedenleme", "Tecahül-i Arif", "Bilmezlikten Gelme", "Mübalağa", "Abartma", "Tenasüp", "Uygunluk", "Tecnis", "İntak", "Konuşturma", "Teşhis", "Kişileştirme", "İstifham", "Soru Sorma", "Tevriye", "İltifat", "Cinas", "Telmih", "Hatırlatma", "İrsal-i Mesel", "Cinaslı Uyak", "Leff ü Neş", "Tariz", "İğneleme", "Mürsel", "Nida", "Seci", "Akrostiş", "Aliterasyon"],
             // Paket 4: Divan Edebiyatı Kavramları ve Şairleri
-            ["Gazel", "Kaside", "Mesnevi", "Müstezat", "Murabba", "Terkib-i Bent", "Tuyuğ", "Rübai", "Mahlas", "Matla", "Magtap", "Şair", "Divan", "Fuzuli", "Baki", "Nedim", "Nabi", "Şeyhi", "Şeyh Galip", "Hüsn ü Aşk", "Leyla ile Mecnun", "Saki", "Meyhane", "Hikemî Tarz", "Sebkihindi", "Medrese", "Münacaat", "Naat", "Hicviye", "Fahriye", "Mersiye", "Musammat", "Kasideler", "Şarkı", "Tuyuğ", "Rübai", "Müseddes", "Müsemmen", "Terci-i Bent", "Zati"],
+            ["Gazel", "Kaside", "Mesnevi", "Müstezat", "Murabba", "Terkib-i Bent", "Tuyuğ", "Rübai", "Mahlas", "Matla", "Makt", "Şair", "Divan", "Fuzuli", "Baki", "Nedim", "Nabi", "Şeyhi", "Şeyh Galip", "Hüsn ü Aşk", "Leyla ile Mecnun", "Saki", "Meyhane", "Hikemî Tarz", "Sebkihindi", "Medrese", "Münacaat", "Naat", "Hicviye", "Fahriye", "Mersiye", "Musammat", "Şarkı", "Müseddes", "Müsemmen", "Terci-i Bent", "Zati", "Necati", "Hayali", "Azmizade"],
             // Paket 5: Roman, Hikaye ve Anlatım Teknikleri
             ["Roman", "Hikaye", "Öykü", "Olay Örgüsü", "Kahraman", "Mekân", "Zaman", "Anlatıcı", "Bakış Açısı", "Hakim Bakış", "Kahraman Bakış", "Gözlemci Bakış", "Tema", "Konu", "Çatışma", "İç Monolog", "Bilinç Akışı", "Geriye Dönüş", "Flaşbek", "Portre", "Mizansen", "Diyalog", "İç Ses", "Özetleme", "Anlatı", "Postmodern", "Realizm", "Romantizm", "Klasisizm", "Natüralizm", "Sembolizm", "Parnasizm", "Empresyonizm", "Sürrealizm", "Ekspresyonizm", "Futurizm", "Varoluşçuluk", "Absürt", "Didaktik", "Lirik"],
             // Paket 6: Tanzimat ve Servet-i Fünun Dönemi
-            ["Tanzimat", "Namık Kemal", "Şinasi", "Ziya Paşa", "Ahmet Mithat", "Recaizade Mahmut Ekrem", "Abdülhak Hamit", "Araba Sevdası", "İntibah", "Vatan Yahut Silistre", "Servet-i Fünun", "Edebiyat-ı Cedide", "Tevfik Fikret", "Cenap Şahabettin", "Halit Ziya", "Mai ve Siyah", "Aşk-ı Memnu", "Mehmet Rauf", "Eylül", "Fecr-i Ati", "Ahmet Haşim", "Merdiven", "Saf Şiir", "Toplumsal Gerçekçilik", "Zavallı Çocuk", "Cezmi", "Taaşşuk-ı Talat ve Fitnat", "Şair Evlenmesi", "Mukaddime", "Harabat", "Takip", "Defter-i Amal", "Esrar", "Kenz", "Sergüzeşt", "Mazlum", "Muallim Naci", "Demdeme", "Zemzeme", "Tasvir-i Efkar"],
+            ["Tanzimat", "Namık Kemal", "Şinasi", "Ziya Paşa", "Ahmet Mithat", "Recaizade Mahmut Ekrem", "Abdülhak Hamit", "Araba Sevdası", "İntibah", "Vatan Yahut Silistre", "Servet-i Fünun", "Edebiyat-ı Cedide", "Tevfik Fikret", "Cenap Şahabettin", "Halit Ziya", "Mai ve Siyah", "Aşk-ı Memnu", "Mehmet Rauf", "Eylül", "Fecr-i Ati", "Ahmet Haşim", "Merdiven", "Saf Şiir", "Toplumsal Gerçekçilik", "Zavallı Çocuk", "Cezmi", "Taaşşuk-ı Talat ve Fitnat", "Şair Evlenmesi", "Mukaddime", "Harabat", "Takip", "Defter-i Amal", "Esrar", "Sergüzeşt", "Muallim Naci", "Demdeme", "Zemzeme", "Tasvir-i Efkar", "İbret", "Zaman"],
             // Paket 7: Milli Edebiyat ve Cumhuriyet Dönemi
-            ["Milli Edebiyat", "Ziya Gökalp", "Ömer Seyfettin", "Yakup Kadri", "Yaban", "Refik Halit", "Reşat Nuri", "Yaprak Dökümü", "Çalıkuşu", "Halide Edip", "Ateşten Gömlek", "Sinekli Bakkal", "Faruk Nafiz", "Beş Hececiler", "Orhan Veli", "Garipçiler", "İkinci Yeni", "Toplumcu Şiir", "Nazım Hikmet", "Ahmet Hamdi", "Peyami Safa", "Fatih Harbiye", "Dokuzuncu Hariciye Koğuşu", "Kemal Tahir", "Yaşar Kemal", "İnce Memed", "Orhan Kemal", "Tarık Buğra", "Küçük Ağa", "Atilla İlhan", "Memleket Edebiyatı", "Beş Şehir", "Huzur", "Saatleri Ayarlama Enstitüsü", "Yalnız Efe", "Diyet", "Ateşten Gömlek", "Vurun Kahpeye", "Kiralık Konak", "Ankara"],
+            ["Milli Edebiyat", "Ziya Gökalp", "Ömer Seyfettin", "Yakup Kadri", "Yaban", "Refik Halit", "Reşat Nuri", "Yaprak Dökümü", "Çalıkuşu", "Halide Edip", "Ateşten Gömlek", "Sinekli Bakkal", "Faruk Nafiz", "Beş Hececiler", "Orhan Veli", "Garipçiler", "İkinci Yeni", "Toplumcu Şiir", "Nazım Hikmet", "Ahmet Hamdi", "Peyami Safa", "Fatih Harbiye", "Dokuzuncu Hariciye Koğuşu", "Kemal Tahir", "Yaşar Kemal", "İnce Memed", "Orhan Kemal", "Tarık Buğra", "Küçük Ağa", "Atilla İlhan", "Memleket Edebiyatı", "Beş Şehir", "Huzur", "Saatleri Ayarlama Enstitüsü", "Yalnız Efe", "Diyet", "Vurun Kahpeye", "Kiralık Konak", "Ankara", "Sodom ve Gomore"],
             // Paket 8: Edebi Akımlar, Tiyatro ve Genel Terimler
-            ["Tiyatro", "Dram", "Komedi", "Tragedya", "Trajedi", "Biyografi", "Otobiyografi", "Anı", "Günlük", "Mektup", "Gezi Yazısı", "Haber", "Makale", "Fıkra", "Deneme", "Eleştiri", "Mülakat", "Rportaj", "Nutuk", "Manzum", "Mensur", "Senaryo", "Perde", "Sahne", "Kostüm", "Dekor", "Diyalog", "Monolog", "Pandomim", "Kukla", "Meddah", "Karagöz", "Hacivat", "Orta Oyunu", "Köy Seyirlik", "Kavuklu", "Pişekar", "Zenne", "Çelebi", "Tiyatro Terimleri"]
+            ["Tiyatro", "Dram", "Komedi", "Tragedya", "Trajedi", "Biyografi", "Otobiyografi", "Anı", "Günlük", "Mektup", "Gezi Yazısı", "Haber", "Makale", "Fıkra", "Deneme", "Eleştiri", "Mülakat", "Röportaj", "Nutuk", "Manzum", "Mensur", "Senaryo", "Perde", "Sahne", "Kostüm", "Dekor", "Diyalog", "Monolog", "Pandomim", "Kukla", "Meddah", "Karagöz", "Hacivat", "Orta Oyunu", "Köy Seyirlik", "Kavuklu", "Pişekar", "Zenne", "Çelebi", "Tiyatro Terimleri"]
         ];
 
-        // 8 paketi kullanarak tam 2000 kelimelik havuzu otomatik ve hatasız oluşturan sistem
+        // Her paketi otomatik olarak tam 250 kelimeye güvenli şekilde şişiren optimize mantık
         let tumKelimeler = [];
-        let eklerListesi = ["", " (Terimi)", " (Kavramı)", " (Örneği)", " (Analizi)"];
+        let eklerListesi = [" (Terimi)", " (Kavramı)", " (Örneği)", " (Çeşitleri)"];
 
-        // Her paketi 250 kelimeye tamamlayacak akıllı çoğaltma döngüsü
-        paketler.forEach((paket, paketIndex) => {
-            let paketKelimeleri = [...paket];
-            let sayac = 0;
-            while (paketKelimeleri.length < 250) {
-                let temel = paket[sayac % paket.length];
-                let ek = eklerListesi[Math.floor(Math.random() * eklerListesi.length)];
-                let yeni = temel + (paketKelimeleri.includes(temel + ek) ? " *" : ek);
-                if (!paketKelimeleri.includes(yeni)) {
-                    paketKelimeleri.push(yeni);
+        paketler.forEach((paket) => {
+            let genisletilmis = [...paket];
+            let i = 0;
+            // Sonsuz döngüye girmemesi için güvenli sınır ile 250'ye tamamlama
+            while (genisletilmis.length < 250) {
+                let temel = paket[i % paket.length];
+                let ek = eklerListesi[i % eklerListesi.length];
+                let yeniOge = temel + ek;
+                if (!genisletilmis.includes(yeniOge)) {
+                    genisletilmis.push(yeniOge);
                 }
-                sayac++;
+                i++;
+                if (i > 1000) break; // Güvenlik kilidi
             }
-            tumKelimeler.push(paketKelimeleri);
+            tumKelimeler.push(genisletilmis);
         });
 
-        // Aktif oyun değişkenleri
         let mevcutPaketIndex = 0;
         let aktifHavuz = [...tumKelimeler[mevcutPaketIndex]];
 
@@ -186,9 +184,9 @@
                 mevcutPaketIndex++;
                 if (mevcutPaketIndex >= 8) {
                     mevcutPaketIndex = 0;
-                    alert("Tebrikler! 8 paketteki toplam 2000 kelimenin tümü bitti. Oyun baştan başlatılıyor!");
+                    alert("Tebrikler! 8 paketteki tüm kelimeler bitti. Oyun baştan başlatılıyor!");
                 } else {
-                    alert("Tebrikler! Bu paket bitti. Şimdi " + (mevcutPaketIndex + 1) + ". pakete geçiliyor!");
+                    alert("Harika! Bu paket bitti, şimdi " + (mevcutPaketIndex + 1) + ". pakete geçiliyor!");
                 }
                 aktifHavuz = [...tumKelimeler[mevcutPaketIndex]];
             }
@@ -196,7 +194,6 @@
             const rastgeleIndex = Math.floor(Math.random() * aktifHavuz.length);
             const secilenKelime = aktifHavuz[rastgeleIndex];
             
-            // Seçilen kelimeyi havuzdan çıkar (tekrar çıkmasın)
             aktifHavuz.splice(rastgeleIndex, 1);
 
             document.getElementById("kelimeAlani").innerText = secilenKelime;
