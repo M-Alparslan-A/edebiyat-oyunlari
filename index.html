@@ -31,12 +31,6 @@
             align-content: space-around;
             z-index: 0;
             pointer-events: none;
-            animation: hafifDagit 20s infinite alternate;
-        }
-
-        @keyframes hafifDagit {
-            0% { transform: translateY(0) rotate(0deg); }
-            100% { transform: translateY(-15px) rotate(3deg); }
         }
 
         .container {
@@ -56,7 +50,7 @@
         }
 
         h1 { 
-            font-size: 3.5rem; 
+            font-size: 3rem; 
             text-align: center; 
             background: rgba(255, 255, 255, 0.95); 
             color: #1e3f36; 
@@ -88,7 +82,6 @@
         button:hover { 
             background-color: #f1c40f; 
             transform: scale(1.05);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
         }
 
         .sayac {
@@ -108,11 +101,12 @@
         <div class="baslik-ust">📚 9 - 10 - 11. Sınıf Edebiyat Kelime Avı 📜</div>
         <h1 id="kelimeAlani">Dersi Başlatmak İçin Tıkla</h1>
         <button onclick="rastgeleKelimeSec()">Rastgele Kelime Getir</button>
-        <div class="sayac" id="sayacAlani">Kalan Kelime: 2000</div>
+        <div class="sayac" id="sayacAlani">Kalan Kelime: 100</div>
     </div>
 
     <script>
-        const anaKelimeListesi = [
+        // Müfredata uygun temel kelime havuzu (Donma yapmaması için optimize edilmiştir)
+        const kelimeler = [
             "Masal", "Destan", "Efsane", "Mit", "Destancı", "Keloğlan", "Padişah", "Vezir", "Derviş", "Cadı", 
             "Tılsım", "Sihirli Elma", "Kaf Dağı", "Anka Kuşu", "Yediveren", "Hızır", "Bozkurt", "Ergenekon", "Oğuz Kağan",
             "Kafiye", "Redif", "Dize", "Mısra", "Beyit", "Bent", "Kıta", "Ölçü", "Hece Ölçüsü", "Aruz Ölçüsü",
@@ -129,28 +123,19 @@
             "Milli Edebiyat", "Ziya Gökalp", "Ömer Seyfettin", "Yakup Kadri", "Yaban", "Refik Halit", "Reşat Nuri", "Yaprak Dökümü", "Çalıkuşu"
         ];
 
-        let kelimeler = [...anaKelimeListesi];
-        const ekler = ["", " (Terimi)", " (Örneği)", " (Kavramı)"];
-        
-        while (kelimeler.length < 2000) {
-            let rastgeleTemel = anaKelimeListesi[Math.floor(Math.random() * anaKelimeListesi.length)];
-            let ek = ekler[Math.floor(Math.random() * ekler.length)];
-            let yeniKelime = rastgeleTemel + ek;
-            if (!kelimeler.includes(yeniKelime)) {
-                kelimeler.push(yeniKelime);
-            }
-        }
-
         let aktifHavuz = [...kelimeler];
+        document.getElementById("sayacAlani").innerText = "Kalan Kelime: " + aktifHavuz.length;
 
         function rastgeleKelimeSec() {
             if (aktifHavuz.length === 0) {
                 aktifHavuz = [...kelimeler];
-                alert("Tebrikler! 2000 kelimenin tümü bitti. Havuz baştan başlatılıyor.");
+                alert("Tebrikler! Tüm kelimeler bitti. Havuz baştan başlatılıyor.");
             }
 
             const rastgeleIndex = Math.floor(Math.random() * aktifHavuz.length);
             const secilenKelime = aktifHavuz[rastgeleIndex];
+            
+            // Seçilen kelimeyi havuzdan çıkarıyoruz ki bir daha tekrar etmesin
             aktifHavuz.splice(rastgeleIndex, 1);
 
             document.getElementById("kelimeAlani").innerText = secilenKelime;
