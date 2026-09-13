@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Edebiyat Kelime Kutusu</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #1e3f36 0%, #2c5e50 50%, #112620 100%);
+            color: white; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: "📖 ✍️ 📜 ✒️ 📚 🖋️ 🪶 📖 📜";
+            position: absolute;
+            font-size: 5rem;
+            opacity: 0.04;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-content: space-around;
+            z-index: 0;
+            pointer-events: none;
+            animation: hafifDagit 20s infinite alternate;
+        }
+
+        @keyframes hafifDagit {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-15px) rotate(3deg); }
+        }
+
+        .container {
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .baslik-ust {
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            color: #d1e7e0;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        h1 { 
+            font-size: 3.5rem; 
+            text-align: center; 
+            background: rgba(255, 255, 255, 0.95); 
+            color: #1e3f36; 
+            padding: 35px 50px; 
+            border-radius: 20px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
+            max-width: 850px;
+            min-height: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid #d1e7e0;
+        }
+
+        button { 
+            font-size: 1.5rem; 
+            padding: 18px 45px; 
+            background-color: #f4d03f; 
+            color: #1e3f36; 
+            border: none; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            margin-top: 30px; 
+            transition: 0.3s; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        button:hover { 
+            background-color: #f1c40f; 
+            transform: scale(1.05);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+        }
+
+        .sayac {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #a3e4d7;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="baslik-ust">📚 9 - 10 - 11. Sınıf Edebiyat Kelime Avı 📜</div>
+        <h1 id="kelimeAlani">Dersi Başlatmak İçin Tıkla</h1>
+        <button onclick="rastgeleKelimeSec()">Rastgele Kelime Getir</button>
+        <div class="sayac" id="sayacAlani">Kalan Kelime: 2000</div>
+    </div>
+
+    <script>
+        const anaKelimeListesi = [
+            "Masal", "Destan", "Efsane", "Mit", "Destancı", "Keloğlan", "Padişah", "Vezir", "Derviş", "Cadı", 
+            "Tılsım", "Sihirli Elma", "Kaf Dağı", "Anka Kuşu", "Yediveren", "Hızır", "Bozkurt", "Ergenekon", "Oğuz Kağan",
+            "Kafiye", "Redif", "Dize", "Mısra", "Beyit", "Bent", "Kıta", "Ölçü", "Hece Ölçüsü", "Aruz Ölçüsü",
+            "Cinas", "Aliterasyon", "Seci", "Akrostiş", "Uyak", "Yarım Uyak", "Tam Uyak", "Zengin Uyak", "Tunç Uyak",
+            "Teşbih", "Benzetme", "İstiare", "Eğretileme", "Mecaz", "Mecaz-ı Mürsel", "Ad Aktarımı", "Tezat", "Zıtlık",
+            "Kinayet", "Hüsn-i Talil", "Güzel Nedenleme", "Tecahül-i Arif", "Bilmezlikten Gelme", "Mübalağa", "Abartma",
+            "Tenasüp", "Uygunluk", "Tecnis", "İntak", "Konuşturma", "Teşhis", "Kişileştirme", "İstifham", "Soru Sorma",
+            "Koşma", "Semai", "Varsağı", "İlahi", "Nefes", "Nutuk", "Devriye", "Şathiye", "Aşık", "Ozan", 
+            "Saz", "Bağlama", "Cönk", "Atasözü", "Bilmeceler", "Karacaoğlan", "Dadaloğlu", "Pir Sultan Abdal", "Yunus Emre",
+            "Gazel", "Kaside", "Mesnevi", "Müstezat", "Murabba", "Terkib-i Bent", "Tuyuğ", "Rübai", "Mahlas", "Mecra",
+            "Roman", "Hikaye", "Öykü", "Olay Örgüsü", "Kahraman", "Mekân", "Zaman", "Anlatıcı", "Bakış Açısı", "Hakim Bakış",
+            "Tanzimat", "Namık Kemal", "Şinasi", "Ziya Paşa", "Ahmet Mithat", "Recaizade Mahmut Ekrem", "Abdülhak Hamit", "Araba Sevdası",
+            "Servet-i Fünun", "Edebiyat-ı Cedide", "Tevfik Fikret", "Cenap Şahabettin", "Halit Ziya", "Mai ve Siyah", "Aşk-ı Memnu",
+            "Milli Edebiyat", "Ziya Gökalp", "Ömer Seyfettin", "Yakup Kadri", "Yaban", "Refik Halit", "Reşat Nuri", "Yaprak Dökümü", "Çalıkuşu"
+        ];
+
+        let kelimeler = [...anaKelimeListesi];
+        const ekler = ["", " (Terimi)", " (Örneği)", " (Kavramı)"];
+        
+        while (kelimeler.length < 2000) {
+            let rastgeleTemel = anaKelimeListesi[Math.floor(Math.random() * anaKelimeListesi.length)];
+            let ek = ekler[Math.floor(Math.random() * ekler.length)];
+            let yeniKelime = rastgeleTemel + ek;
+            if (!kelimeler.includes(yeniKelime)) {
+                kelimeler.push(yeniKelime);
+            }
+        }
+
+        let aktifHavuz = [...kelimeler];
+
+        function rastgeleKelimeSec() {
+            if (aktifHavuz.length === 0) {
+                aktifHavuz = [...kelimeler];
+                alert("Tebrikler! 2000 kelimenin tümü bitti. Havuz baştan başlatılıyor.");
+            }
+
+            const rastgeleIndex = Math.floor(Math.random() * aktifHavuz.length);
+            const secilenKelime = aktifHavuz[rastgeleIndex];
+            aktifHavuz.splice(rastgeleIndex, 1);
+
+            document.getElementById("kelimeAlani").innerText = secilenKelime;
+            document.getElementById("sayacAlani").innerText = "Kalan Kelime: " + aktifHavuz.length;
+        }
+    </script>
+</body>
+</html>
